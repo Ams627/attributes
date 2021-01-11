@@ -1,0 +1,42 @@
+:toc:
+:sectnums:
+:toclevels: 5
+:sectnumlevels: 5
+:showcomments:
+:xrefstyle: short
+:icons: font
+:source-highlighter: coderay
+:tick: &#x2714;
+:pound: &#xA3;
+
+= C# attributes
+
+== Enum Attribute
+
+Any **type** in C# has an `Attributes` property which is of type `TypeAttributes` - it's a flag enum (meaning
+it contains bit values).
+
+This applies to POD types too, so we can print the `Attributes` property for int as follows:
+
+[source,csharp]
+----
+using System;
+
+namespace Att1
+{
+    class Program
+    {
+        private static void Main(string[] args)
+        {
+            var att = typeof(int).Attributes;
+            Console.WriteLine($"{att}");
+        }
+    }
+}
+----
+
+The result is:
+
+----
+AutoLayout, AnsiClass, Class, Public, SequentialLayout, Sealed, Serializable, BeforeFieldInit
+----
