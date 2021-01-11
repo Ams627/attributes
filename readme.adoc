@@ -98,11 +98,55 @@ namespace Att2
             typeof(Program).GetCustomAttributes(true);
             typeof(Program).GetCustomAttributes(true);
             var atts = typeof(Program).CustomAttributes;
-            Console.WriteLine();
         }
     }
 }
 ----
 
+== Custom attributes on methods and properties
 
+A method or property can have a custom attribute. To retrieve the custom attribute of a method, we need 
+to call the GetMethod method as follows:
 
+[source,csharp]
+----
+var attributes = typeof(Program).GetMethod(nameof(Func)).GetCustomAttributes(true);
+----
+
+This call will create an instance of each attribute class defined on the method. The definition follows the
+same pattern as for an attribute defined on a class:
+
+[source,csharp]
+----
+[Egg]
+public void Func()
+{
+}
+----
+
+== Retrieving attributes
+
+We use the reflection API `GetCustomAttributes` to obtain the attributes for a type. The
+following code gets all the instances of the `NClass` Attribute from any type in the current assembly that
+has an `NClass` attribute:
+
+[source,csharp]
+----
+var commandClasses = from type in asm.GetTypes()
+                     let atts = type.GetCustomAttributes(true)
+                     from att in atts let nclass = (NaClass) att
+                     where nclass != null
+                     select nclass;
+----
+
+However, we can achieve the same more tersely with the static method `Attribute.GetCustomAttributes`. 
+The following code gets a list of all `NaClass` attributes from any of the types in the
+currently executing assembly:
+
+[source,csharp]
+----
+Assembly asm = Assembly.GetExecutingAssembly();
+var commandClasses = from type in asm.GetTypes()
+                     let atts = Attribute.GetCustomAttributes(type, typeof(NaClass))
+                     from att in atts select att;
+----
