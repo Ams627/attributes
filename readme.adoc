@@ -40,3 +40,69 @@ The result is:
 ----
 AutoLayout, AnsiClass, Class, Public, SequentialLayout, Sealed, Serializable, BeforeFieldInit
 ----
+
+== Custom Attributes
+
+A class can have one or more custom attributes - a custom attribute is applied to a class using square brackets 
+in the following way:
+
+[source,csharp]
+----
+[ToastAttribute]
+[EggAttribute]
+class MyClass
+{
+}
+----
+
+Attributes can have parameterised constructors - the parameters must be simple types:
+
+[source,csharp]
+----
+[ToastAttribute("Slice")]
+class X
+{
+}
+----
+
+=== Defining attribute classes
+
+An attribute is just an ordinary class with the condition that it must derive from `System.Attribute`.
+
+An instance of the attribute class is created every time the reflection API `GetCustomAttributes` is 
+used on the type. Using the reflection API `CustomAttributes` simply returns a collection of `System.Type` 
+(without instantiating anything).
+
+Thus the following code prints _Making toast_ twice:
+
+[source,csharp]
+----
+using System;
+
+namespace Att2
+{
+    class ToastAttribute : System.Attribute
+    {
+        public ToastAttribute()
+        {
+            Console.WriteLine("Making toast");
+        }
+    }
+
+    [Toast]
+    class Program
+    {
+        private static void Main(string[] args)
+        {
+            Console.WriteLine("Program started");
+            typeof(Program).GetCustomAttributes(true);
+            typeof(Program).GetCustomAttributes(true);
+            var atts = typeof(Program).CustomAttributes;
+            Console.WriteLine();
+        }
+    }
+}
+----
+
+
+
